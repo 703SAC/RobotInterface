@@ -1,0 +1,11 @@
+C:\Users\LGCNS\Documents\Repository\RobotInterface\RobotInterface.Driver\bin\Debug\net6.0\RobotInterface.Driver.deps.json
+C:\Users\LGCNS\Documents\Repository\RobotInterface\RobotInterface.Driver\bin\Debug\net6.0\RobotInterface.Driver.dll
+C:\Users\LGCNS\Documents\Repository\RobotInterface\RobotInterface.Driver\bin\Debug\net6.0\RobotInterface.Driver.pdb
+C:\Users\LGCNS\Documents\Repository\RobotInterface\RobotInterface.Driver\obj\Debug\net6.0\RobotInterface.Driver.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\LGCNS\Documents\Repository\RobotInterface\RobotInterface.Driver\obj\Debug\net6.0\RobotInterface.Driver.AssemblyInfoInputs.cache
+C:\Users\LGCNS\Documents\Repository\RobotInterface\RobotInterface.Driver\obj\Debug\net6.0\RobotInterface.Driver.AssemblyInfo.cs
+C:\Users\LGCNS\Documents\Repository\RobotInterface\RobotInterface.Driver\obj\Debug\net6.0\RobotInterface.Driver.csproj.CoreCompileInputs.cache
+C:\Users\LGCNS\Documents\Repository\RobotInterface\RobotInterface.Driver\obj\Debug\net6.0\RobotInterface.Driver.dll
+C:\Users\LGCNS\Documents\Repository\RobotInterface\RobotInterface.Driver\obj\Debug\net6.0\refint\RobotInterface.Driver.dll
+C:\Users\LGCNS\Documents\Repository\RobotInterface\RobotInterface.Driver\obj\Debug\net6.0\RobotInterface.Driver.pdb
+C:\Users\LGCNS\Documents\Repository\RobotInterface\RobotInterface.Driver\obj\Debug\net6.0\ref\RobotInterface.Driver.dll

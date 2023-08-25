@@ -8,27 +8,25 @@
     "net6.0": []
   },
   "packageFolders": {
-    "C:\\Users\\이해창\\.nuget\\packages\\": {}
+    "C:\\Users\\LGCNS\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\이해창\\source\\repos\\RobotInterface\\RobotInterface.Driver\\RobotInterface.Driver.csproj",
+      "projectUniqueName": "C:\\Users\\LGCNS\\Documents\\Repository\\RobotInterface\\RobotInterface.Driver\\RobotInterface.Driver.csproj",
       "projectName": "RobotInterface.Driver",
-      "projectPath": "C:\\Users\\이해창\\source\\repos\\RobotInterface\\RobotInterface.Driver\\RobotInterface.Driver.csproj",
-      "packagesPath": "C:\\Users\\이해창\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\이해창\\source\\repos\\RobotInterface\\RobotInterface.Driver\\obj\\",
+      "projectPath": "C:\\Users\\LGCNS\\Documents\\Repository\\RobotInterface\\RobotInterface.Driver\\RobotInterface.Driver.csproj",
+      "packagesPath": "C:\\Users\\LGCNS\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\LGCNS\\Documents\\Repository\\RobotInterface\\RobotInterface.Driver\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\이해창\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 19.1.config",
+        "C:\\Users\\LGCNS\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net6.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\DevExpress 19.1\\Components\\System\\Components\\Packages": {},
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
@@ -63,7 +61,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
       }
     }
   }

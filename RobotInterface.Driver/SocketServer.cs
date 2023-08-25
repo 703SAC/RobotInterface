@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Diagnostics;
+using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -7,14 +8,10 @@ namespace RobotInterface.Driver
 {
     public class SocketServer
     {
-        static void Main(string[] args)
-        {
-            Console.WriteLine("Hello, World!");
-        }
         #region [Events]
-        public event EventHandler<CEventArgs.ConnectionEventArgs> OnClientConnectionChanged;
-        public event EventHandler<CEventArgs.MessageReceivedArgs> OnReceivedMessage;
-        public event EventHandler<CEventArgs.InternalExceptionArgs> OnExceptionThrown;
+        public event EventHandler<CEventArgs.ConnectionEventArgs>? OnClientConnectionChanged;
+        public event EventHandler<CEventArgs.MessageReceivedArgs>? OnReceivedMessage;
+        public event EventHandler<CEventArgs.InternalExceptionArgs>? OnExceptionThrown;
         #endregion
 
         #region [Static Variables]
@@ -41,28 +38,31 @@ namespace RobotInterface.Driver
         #region [Public Methods]
         public void StartListening()
         {
-            try
+            Task.Run(() =>
             {
-                _listener.Start();
-                _listening = true;
-                while (_listening)
+                try
                 {
-                    TcpClient client = _listener.AcceptTcpClient();
-                    string clientId = client.Client.RemoteEndPoint.ToString();
-                    _clients.Add(clientId, client);
+                    _listener.Start();
+                    _listening = true;
+                    while (_listening)
+                    {
+                        TcpClient client = _listener.AcceptTcpClient();
+                        string clientId = client.Client.RemoteEndPoint.ToString();
+                        _clients.Add(clientId, client);
 
-                    CEventArgs.ConnectionEventArgs args = new CEventArgs.ConnectionEventArgs();
-                    args.ClientID = clientId;
-                    args.Connected = client.Connected;
-                    HandleClientStatus(clientId, args);
+                        CEventArgs.ConnectionEventArgs args = new CEventArgs.ConnectionEventArgs();
+                        args.ClientID = clientId;
+                        args.Connected = client.Connected;
+                        HandleClientStatus(clientId, args);
 
-                    ThreadPool.QueueUserWorkItem(ReceiveMessage, client);
+                        ThreadPool.QueueUserWorkItem(ReceiveMessage, client);
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                HandleException(ex, "SocketServer.StartListening()");
-            }
+                catch (Exception ex)
+                {
+                    HandleException(ex, "SocketServer.StartListening()");
+                }
+            });
         }
         public void StopListening()
         {
@@ -70,7 +70,7 @@ namespace RobotInterface.Driver
             {
                 _listening = false;
                 _listener.Stop();
-                foreach(var c  in _clients.Values)
+                foreach(var c in _clients.Values)
                 {
                     try
                     {
@@ -98,19 +98,35 @@ namespace RobotInterface.Driver
                 TcpClient client = (TcpClient)state;
                 NetworkStream stream = client.GetStream();
                 StringBuilder stringBuilder = new StringBuilder();
+                
 
                 while(client.Client.Connected)
                 {
                     byte[] arrayBytesRequest = new byte[client.Available];
 
                     int nRead = stream.Read(arrayBytesRequest, 0, arrayBytesRequest.Length);
+                    string clientID = client.Client.RemoteEndPoint.ToString();
 
                     if(nRead > 0)
                     {
-                        string sMsgReqeust = Encoding.ASCII.GetString(arrayBytesRequest);
-                        Console.WriteLine("Received message request: " + sMsgReqeust);
-                        string sMsgAnswer = string.Empty;
+                        string sMsgRequest = Encoding.ASCII.GetString(arrayBytesRequest);
+                        // Available은 데이터 Read 할 수 있는 byte 크기를 말한다.
+                        Debug.WriteLine("nRead : " + nRead + " client.Available : " + client.Available + " arrayBytesRequest.Length : " + arrayBytesRequest.Length);
 
+                        CEventArgs.MessageReceivedArgs args = new CEventArgs.MessageReceivedArgs();
+                        args.ClientID = clientID;
+                        args.Message = sMsgRequest;
+                        HandleReceivedMessage(clientID, args);
+
+                    }
+                    else
+                    {
+                        if(client.Available == 0)
+                        {
+                            Console.WriteLine("Client closed the connection.");
+                            _clients.Remove(clientID);
+                            stream.Close();
+                        }
                     }
                 }
 
@@ -120,18 +136,60 @@ namespace RobotInterface.Driver
                 HandleException(ex, "SocketServer.ReceiveMessage()");
             }
         }
+
+        public void SendMessage(string message)
+        {
+            try
+            {
+                foreach (var client in _clients)
+                {
+                    Task.Run(() =>
+                    {
+                        try
+                        {
+                            byte[] buffer = Encoding.Default.GetBytes(message);
+                            client.Value.Client.SendBufferSize = buffer.Length;
+                            client.Value.Client.Send(Encoding.Default.GetBytes(message));
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    });
+                }
+            }
+            catch(Exception ex)
+            {
+                HandleException(ex, $"SocketServer.SendMessage({message})");
+            }
+        }
+
+        public void SendMessage(string clientID, string message)
+        {
+            try
+            {
+                if (_clients.ContainsKey(clientID))
+                {
+                    _clients[clientID].Client.Send(Encoding.Default.GetBytes(message));
+                }
+            }
+            catch(Exception ex)
+            {
+                HandleException(ex, $"SendMessage({clientID}, {message})");
+            }
+        }
         #endregion
 
         #region [EventMethods]
         private void HandleClientStatus(string clientId, CEventArgs.ConnectionEventArgs args)
         {
-            EventHandler<CEventArgs.ConnectionEventArgs> handler = OnClientConnectionChanged;
-            handler.Invoke(clientId, args);
+            EventHandler<CEventArgs.ConnectionEventArgs>? handler = OnClientConnectionChanged;
+            handler?.Invoke(clientId, args);
         }
         private void HandleReceivedMessage(string clientId, CEventArgs.MessageReceivedArgs args)
         {
-            EventHandler<CEventArgs.MessageReceivedArgs> handler = OnReceivedMessage;
-            handler.Invoke(clientId, args);
+            EventHandler<CEventArgs.MessageReceivedArgs>? handler = OnReceivedMessage;
+            handler?.Invoke(clientId, args);
         }
         private void HandleException(Exception ex, string methodName)
         {
@@ -144,8 +202,8 @@ namespace RobotInterface.Driver
         }
         private void ThrowException(string methodName, CEventArgs.InternalExceptionArgs args)
         {
-            EventHandler<CEventArgs.InternalExceptionArgs> handler = OnExceptionThrown;
-            handler.Invoke(methodName, args);
+            EventHandler<CEventArgs.InternalExceptionArgs>? handler = OnExceptionThrown;
+            handler?.Invoke(methodName, args);
         }
         #endregion
     }

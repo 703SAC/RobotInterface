@@ -13,3 +13,17 @@ C:\Users\이해창\source\repos\RobotInterface\HttpTest\obj\Debug\net6.0\refint\
 C:\Users\이해창\source\repos\RobotInterface\HttpTest\obj\Debug\net6.0\HttpTest.pdb
 C:\Users\이해창\source\repos\RobotInterface\HttpTest\obj\Debug\net6.0\HttpTest.genruntimeconfig.cache
 C:\Users\이해창\source\repos\RobotInterface\HttpTest\obj\Debug\net6.0\ref\HttpTest.dll
+C:\Users\LGCNS\Documents\Repository\RobotInterface\HttpTest\bin\Debug\net6.0\HttpTest.exe
+C:\Users\LGCNS\Documents\Repository\RobotInterface\HttpTest\bin\Debug\net6.0\HttpTest.deps.json
+C:\Users\LGCNS\Documents\Repository\RobotInterface\HttpTest\bin\Debug\net6.0\HttpTest.runtimeconfig.json
+C:\Users\LGCNS\Documents\Repository\RobotInterface\HttpTest\bin\Debug\net6.0\HttpTest.dll
+C:\Users\LGCNS\Documents\Repository\RobotInterface\HttpTest\bin\Debug\net6.0\HttpTest.pdb
+C:\Users\LGCNS\Documents\Repository\RobotInterface\HttpTest\obj\Debug\net6.0\HttpTest.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\LGCNS\Documents\Repository\RobotInterface\HttpTest\obj\Debug\net6.0\HttpTest.AssemblyInfoInputs.cache
+C:\Users\LGCNS\Documents\Repository\RobotInterface\HttpTest\obj\Debug\net6.0\HttpTest.AssemblyInfo.cs
+C:\Users\LGCNS\Documents\Repository\RobotInterface\HttpTest\obj\Debug\net6.0\HttpTest.csproj.CoreCompileInputs.cache
+C:\Users\LGCNS\Documents\Repository\RobotInterface\HttpTest\obj\Debug\net6.0\HttpTest.dll
+C:\Users\LGCNS\Documents\Repository\RobotInterface\HttpTest\obj\Debug\net6.0\refint\HttpTest.dll
+C:\Users\LGCNS\Documents\Repository\RobotInterface\HttpTest\obj\Debug\net6.0\HttpTest.pdb
+C:\Users\LGCNS\Documents\Repository\RobotInterface\HttpTest\obj\Debug\net6.0\HttpTest.genruntimeconfig.cache
+C:\Users\LGCNS\Documents\Repository\RobotInterface\HttpTest\obj\Debug\net6.0\ref\HttpTest.dll
