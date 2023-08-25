@@ -49,11 +49,17 @@ namespace SocketClientExecute
         {
             socket.Connect(endPoint);
             
-            byte[] buffer = new byte[1024];
-            buffer = Encoding.UTF8.GetBytes(message);
-            for(int i = 0; i < 20000; i++)
+            byte[] buffer = Encoding.UTF8.GetBytes(message);
+
+            byte[] withHeaderBuffer = new byte[2 + buffer.Length];
+            byte[] dataSize = BitConverter.GetBytes(IPAddress.HostToNetworkOrder((short)buffer.Length));
+            //Console.WriteLine("dataSize : " + (short)buffer.Length);
+            Array.Copy(dataSize, 0, withHeaderBuffer, 0, dataSize.Length);
+            Array.Copy(buffer, 0, withHeaderBuffer, 2, buffer.Length);
+            for (int i = 0; i < 20000; i++)
             {
-                socket.Send(buffer);
+                //Console.WriteLine(Encoding.UTF8.GetString(withHeaderBuffer));
+                socket.Send(withHeaderBuffer);
             }
             Console.WriteLine("" + message + " 의 메세지 2만 번 Send 완료");
         }

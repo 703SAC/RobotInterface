@@ -63,7 +63,10 @@ namespace SocketServerExecute
 
         private static void Server_OnReceivedMessage(object? sender, CEventArgs.MessageReceivedArgs e)
         {
-            Console.WriteLine(cnt++ + " "  + e.ClientID + " : " + e.Message);
+            if(cnt++ % 20000 == 0)
+            {
+                Console.WriteLine(cnt + " " + e.ClientID + " : " + e.Message);
+            }
         }
 
         private static void Server_OnClientConnectionChanged(object? sender, CEventArgs.ConnectionEventArgs e)

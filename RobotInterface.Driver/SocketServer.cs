@@ -19,6 +19,7 @@ namespace RobotInterface.Driver
         Dictionary<string, TcpClient> _clients;
         TcpListener _listener;
         bool _listening = false;
+        static int HeaderSize = 2;
         #endregion
 
         #region [Constructor]
@@ -102,16 +103,50 @@ namespace RobotInterface.Driver
 
                 while(client.Client.Connected)
                 {
-                    byte[] arrayBytesRequest = new byte[client.Available];
-
-                    int nRead = stream.Read(arrayBytesRequest, 0, arrayBytesRequest.Length);
                     string clientID = client.Client.RemoteEndPoint.ToString();
 
+                    // Read Header = Size of Message (2bytes)
+                    byte[] headerBuffer = new byte[HeaderSize];
+                    int readHeaderSize = stream.Read(headerBuffer, 0, HeaderSize);
+
+                    if (readHeaderSize < 1)
+                    {
+                        Console.WriteLine("Client closed the connection.");
+                        _clients.Remove(clientID);
+                        stream.Close();
+                    }
+                    else if (readHeaderSize < HeaderSize)
+                    {
+                        stream.Read(headerBuffer, readHeaderSize, HeaderSize - readHeaderSize);
+                    }
+
+                    // Read Message (header size bytes)
+                    short dataSize = IPAddress.NetworkToHostOrder(BitConverter.ToInt16(headerBuffer));
+                    Debug.WriteLine($"clientID : {clientID} dataSize : {dataSize}");
+
+                    byte[] dataBuffer = new byte[dataSize];
+
+                    int receivedDataSize = 0;
+
+                    while(receivedDataSize < dataSize)
+                    {
+                        int nRead = stream.Read(dataBuffer, receivedDataSize, dataSize - receivedDataSize);
+                        receivedDataSize += nRead;
+                    }
+                    string receivedMessage = Encoding.UTF8.GetString(dataBuffer);
+
+                    CEventArgs.MessageReceivedArgs args = new CEventArgs.MessageReceivedArgs();
+                    args.ClientID = clientID;
+                    args.Message = receivedMessage;
+                    HandleReceivedMessage(clientID, args);
+
+
+                    /*
                     if(nRead > 0)
                     {
-                        string sMsgRequest = Encoding.ASCII.GetString(arrayBytesRequest);
+                        string sMsgRequest = Encoding.ASCII.GetString(dataBuffer);
                         // Available은 데이터 Read 할 수 있는 byte 크기를 말한다.
-                        Debug.WriteLine("nRead : " + nRead + " client.Available : " + client.Available + " arrayBytesRequest.Length : " + arrayBytesRequest.Length);
+                        Debug.WriteLine("nRead : " + nRead + " client.Available : " + client.Available + " arrayBytesRequest.Length : " + dataBuffer.Length);
 
                         CEventArgs.MessageReceivedArgs args = new CEventArgs.MessageReceivedArgs();
                         args.ClientID = clientID;
@@ -119,15 +154,7 @@ namespace RobotInterface.Driver
                         HandleReceivedMessage(clientID, args);
 
                     }
-                    else
-                    {
-                        if(client.Available == 0)
-                        {
-                            Console.WriteLine("Client closed the connection.");
-                            _clients.Remove(clientID);
-                            stream.Close();
-                        }
-                    }
+                    */
                 }
 
             }
@@ -147,9 +174,15 @@ namespace RobotInterface.Driver
                     {
                         try
                         {
-                            byte[] buffer = Encoding.Default.GetBytes(message);
-                            client.Value.Client.SendBufferSize = buffer.Length;
-                            client.Value.Client.Send(Encoding.Default.GetBytes(message));
+                            byte[] dataBuffer = Encoding.UTF8.GetBytes(message);
+                            byte[] dataWithHeaderBuffer = new byte[HeaderSize + dataBuffer.Length];
+                            byte[] dataSize = BitConverter.GetBytes(IPAddress.HostToNetworkOrder((short)dataBuffer.Length));
+                           
+                            Array.Copy(dataSize, 0, dataWithHeaderBuffer, 0, dataSize.Length);
+                            Array.Copy(dataBuffer, 0, dataWithHeaderBuffer, HeaderSize, dataBuffer.Length);
+
+                            client.Value.Client.SendBufferSize = dataWithHeaderBuffer.Length;
+                            client.Value.Client.Send(dataWithHeaderBuffer);
                         }
                         catch (Exception)
                         {

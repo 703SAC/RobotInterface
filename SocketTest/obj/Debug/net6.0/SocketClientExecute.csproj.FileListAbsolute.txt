@@ -1,6 +1,3 @@
-C:\Users\LGCNS\Documents\Repository\RobotInterface\SocketTest\bin\Debug\net6.0\RobotInterface.Driver.deps.json
-C:\Users\LGCNS\Documents\Repository\RobotInterface\SocketTest\bin\Debug\net6.0\RobotInterface.Driver.runtimeconfig.json
-C:\Users\LGCNS\Documents\Repository\RobotInterface\SocketTest\bin\Debug\net6.0\RobotInterface.Driver.exe
 C:\Users\LGCNS\Documents\Repository\RobotInterface\SocketTest\bin\Debug\net6.0\SocketClientExecute.exe
 C:\Users\LGCNS\Documents\Repository\RobotInterface\SocketTest\bin\Debug\net6.0\SocketClientExecute.deps.json
 C:\Users\LGCNS\Documents\Repository\RobotInterface\SocketTest\bin\Debug\net6.0\SocketClientExecute.runtimeconfig.json
