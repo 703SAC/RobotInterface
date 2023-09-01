@@ -1,0 +1,11 @@
+C:\Users\LGCNS\Documents\Repository\RobotInterface\CobotApplication\bin\Debug\net6.0\CobotApplication.deps.json
+C:\Users\LGCNS\Documents\Repository\RobotInterface\CobotApplication\bin\Debug\net6.0\CobotApplication.dll
+C:\Users\LGCNS\Documents\Repository\RobotInterface\CobotApplication\bin\Debug\net6.0\CobotApplication.pdb
+C:\Users\LGCNS\Documents\Repository\RobotInterface\CobotApplication\obj\Debug\net6.0\CobotApplication.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\LGCNS\Documents\Repository\RobotInterface\CobotApplication\obj\Debug\net6.0\CobotApplication.AssemblyInfoInputs.cache
+C:\Users\LGCNS\Documents\Repository\RobotInterface\CobotApplication\obj\Debug\net6.0\CobotApplication.AssemblyInfo.cs
+C:\Users\LGCNS\Documents\Repository\RobotInterface\CobotApplication\obj\Debug\net6.0\CobotApplication.csproj.CoreCompileInputs.cache
+C:\Users\LGCNS\Documents\Repository\RobotInterface\CobotApplication\obj\Debug\net6.0\CobotApplication.dll
+C:\Users\LGCNS\Documents\Repository\RobotInterface\CobotApplication\obj\Debug\net6.0\refint\CobotApplication.dll
+C:\Users\LGCNS\Documents\Repository\RobotInterface\CobotApplication\obj\Debug\net6.0\CobotApplication.pdb
+C:\Users\LGCNS\Documents\Repository\RobotInterface\CobotApplication\obj\Debug\net6.0\ref\CobotApplication.dll

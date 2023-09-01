@@ -1,0 +1,36 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "RunApplication/1.0.0": {
+        "dependencies": {
+          "CobotApplication": "1.0.0"
+        },
+        "runtime": {
+          "RunApplication.dll": {}
+        }
+      },
+      "CobotApplication/1.0.0": {
+        "runtime": {
+          "CobotApplication.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "RunApplication/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CobotApplication/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
