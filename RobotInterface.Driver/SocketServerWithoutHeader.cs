@@ -6,7 +6,7 @@ using System.Text;
 
 namespace RobotInterface.Driver
 {
-    public class SocketServer
+    public class SocketServerWithoutHeader
     {
         #region [Events]
         public event EventHandler<CEventArgs.ConnectionEventArgs>? OnClientConnectionChanged;
@@ -23,12 +23,12 @@ namespace RobotInterface.Driver
         #endregion
 
         #region [Constructor]
-        public SocketServer(int port)
+        public SocketServerWithoutHeader(int port)
         {
             _listener = new TcpListener(IPAddress.Any, port);
             _clients = new Dictionary<string, TcpClient>();
         }
-        public SocketServer(string ip, int port)
+        public SocketServerWithoutHeader(string ip, int port)
         {
             _listener = new TcpListener(IPAddress.Parse(ip), port);
             _clients = new Dictionary<string, TcpClient>();
@@ -99,12 +99,15 @@ namespace RobotInterface.Driver
                 TcpClient client = (TcpClient)state;
                 NetworkStream stream = client.GetStream();
                 StringBuilder stringBuilder = new StringBuilder();
-                
+                byte[] arrayBytesRequest = new byte[1024];
 
-                while(client.Client.Connected)
+                while (client.Client.Connected)
                 {
+                    int nRead = stream.Read(arrayBytesRequest, 0, arrayBytesRequest.Length);
+
                     string clientID = client.Client.RemoteEndPoint.ToString();
 
+                    /*
                     // Read Header = Size of Message (2bytes)
                     byte[] headerBuffer = new byte[HeaderSize];
                     int readHeaderSize = stream.Read(headerBuffer, 0, HeaderSize);
@@ -139,14 +142,14 @@ namespace RobotInterface.Driver
                     args.ClientID = clientID;
                     args.Message = receivedMessage;
                     HandleReceivedMessage(clientID, args);
+                    */
 
-
-                    /*
+                    
                     if(nRead > 0)
                     {
-                        string sMsgRequest = Encoding.ASCII.GetString(dataBuffer);
+                        string sMsgRequest = Encoding.ASCII.GetString(arrayBytesRequest);
                         // Available은 데이터 Read 할 수 있는 byte 크기를 말한다.
-                        Debug.WriteLine("nRead : " + nRead + " client.Available : " + client.Available + " arrayBytesRequest.Length : " + dataBuffer.Length);
+                        Debug.WriteLine("nRead : " + nRead + " client.Available : " + client.Available + " arrayBytesRequest.Length : " + arrayBytesRequest.Length);
 
                         CEventArgs.MessageReceivedArgs args = new CEventArgs.MessageReceivedArgs();
                         args.ClientID = clientID;
@@ -154,7 +157,7 @@ namespace RobotInterface.Driver
                         HandleReceivedMessage(clientID, args);
 
                     }
-                    */
+                    
                 }
 
             }
@@ -174,15 +177,15 @@ namespace RobotInterface.Driver
                     {
                         try
                         {
-                            byte[] dataBuffer = Encoding.UTF8.GetBytes(message);
-                            byte[] dataWithHeaderBuffer = new byte[HeaderSize + dataBuffer.Length];
-                            byte[] dataSize = BitConverter.GetBytes(IPAddress.HostToNetworkOrder((short)dataBuffer.Length));
+                            byte[] dataBuffer = Encoding.ASCII.GetBytes(message);
+                            //byte[] dataWithHeaderBuffer = new byte[HeaderSize + dataBuffer.Length];
+                            //byte[] dataSize = BitConverter.GetBytes(IPAddress.HostToNetworkOrder((short)dataBuffer.Length));
                            
-                            Array.Copy(dataSize, 0, dataWithHeaderBuffer, 0, dataSize.Length);
-                            Array.Copy(dataBuffer, 0, dataWithHeaderBuffer, HeaderSize, dataBuffer.Length);
+                            //Array.Copy(dataSize, 0, dataWithHeaderBuffer, 0, dataSize.Length);
+                            //Array.Copy(dataBuffer, 0, dataWithHeaderBuffer, HeaderSize, dataBuffer.Length);
 
-                            client.Value.Client.SendBufferSize = dataWithHeaderBuffer.Length;
-                            client.Value.Client.Send(dataWithHeaderBuffer);
+                            client.Value.Client.SendBufferSize = dataBuffer.Length;
+                            client.Value.Client.Send(dataBuffer);
                         }
                         catch (Exception)
                         {
@@ -196,6 +199,39 @@ namespace RobotInterface.Driver
                 HandleException(ex, $"SocketServer.SendMessage({message})");
             }
         }
+        public void SendMessage(int message)
+        {
+            try
+            {
+                foreach (var client in _clients)
+                {
+                    Task.Run(() =>
+                    {
+                        try
+                        {
+                            //byte[] dataBuffer = BitConverter.GetBytes(message);
+                            byte[] dataBuffer = BitConverter.GetBytes(IPAddress.NetworkToHostOrder(message));
+                            //byte[] dataWithHeaderBuffer = new byte[HeaderSize + dataBuffer.Length];
+                            //byte[] dataSize = BitConverter.GetBytes(IPAddress.HostToNetworkOrder((short)dataBuffer.Length));
+
+                            //Array.Copy(dataSize, 0, dataWithHeaderBuffer, 0, dataSize.Length);
+                            //Array.Copy(dataBuffer, 0, dataWithHeaderBuffer, HeaderSize, dataBuffer.Length);
+
+                            client.Value.Client.SendBufferSize = dataBuffer.Length;
+                            client.Value.Client.Send(dataBuffer);
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex, $"SocketServer.SendMessage({message})");
+            }
+        }
 
         public void SendMessage(string clientID, string message)
         {
@@ -203,12 +239,43 @@ namespace RobotInterface.Driver
             {
                 if (_clients.ContainsKey(clientID))
                 {
-                    _clients[clientID].Client.Send(Encoding.Default.GetBytes(message));
+                    Console.WriteLine(BitConverter.GetBytes(1));
+                    _clients[clientID].Client.Send(Encoding.ASCII.GetBytes(message));
+
                 }
             }
             catch(Exception ex)
             {
                 HandleException(ex, $"SendMessage({clientID}, {message})");
+            }
+        }
+        public void SendMessage(string clientID, int message)
+        {
+            try
+            {
+                if (_clients.ContainsKey(clientID))
+                {
+                    byte[] dataBuffer = BitConverter.GetBytes(IPAddress.NetworkToHostOrder(message));
+                    _clients[clientID].Client.Send(dataBuffer);
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex, $"SendMessage({clientID}, {message})");
+            }
+        }
+        public void SendMessage(string clientID, byte[] buffer)
+        {
+            try
+            {
+                if (_clients.ContainsKey(clientID))
+                {
+                    _clients[clientID].Client.Send(buffer);
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex, $"SendMessage({clientID}, {buffer})");
             }
         }
         #endregion

@@ -5,11 +5,24 @@
       "CobotApplication/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
+        "dependencies": {
+          "RobotInterface.Driver": "1.0.0"
+        },
         "compile": {
           "bin/placeholder/CobotApplication.dll": {}
         },
         "runtime": {
           "bin/placeholder/CobotApplication.dll": {}
+        }
+      },
+      "RobotInterface.Driver/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "compile": {
+          "bin/placeholder/RobotInterface.Driver.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/RobotInterface.Driver.dll": {}
         }
       }
     }
@@ -19,6 +32,11 @@
       "type": "project",
       "path": "../CobotApplication/CobotApplication.csproj",
       "msbuildProject": "../CobotApplication/CobotApplication.csproj"
+    },
+    "RobotInterface.Driver/1.0.0": {
+      "type": "project",
+      "path": "../RobotInterface.Driver/RobotInterface.Driver.csproj",
+      "msbuildProject": "../RobotInterface.Driver/RobotInterface.Driver.csproj"
     }
   },
   "projectFileDependencyGroups": {

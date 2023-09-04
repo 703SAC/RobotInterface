@@ -16,3 +16,5 @@ C:\Users\LGCNS\Documents\Repository\RobotInterface\RunApplication\obj\Debug\net6
 C:\Users\LGCNS\Documents\Repository\RobotInterface\RunApplication\obj\Debug\net6.0\RunApplication.pdb
 C:\Users\LGCNS\Documents\Repository\RobotInterface\RunApplication\obj\Debug\net6.0\RunApplication.genruntimeconfig.cache
 C:\Users\LGCNS\Documents\Repository\RobotInterface\RunApplication\obj\Debug\net6.0\ref\RunApplication.dll
+C:\Users\LGCNS\Documents\Repository\RobotInterface\RunApplication\bin\Debug\net6.0\RobotInterface.Driver.dll
+C:\Users\LGCNS\Documents\Repository\RobotInterface\RunApplication\bin\Debug\net6.0\RobotInterface.Driver.pdb

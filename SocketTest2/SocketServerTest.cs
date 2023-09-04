@@ -14,7 +14,7 @@ namespace SocketServerExecute
         static int cnt = 0;
         static void Main(string[] args)
         {
-            SocketServer server = new SocketServer(12345);
+            SocketServerWithHeader server = new SocketServerWithHeader(12345);
             server.OnExceptionThrown += Server_OnExceptionThrown;
             server.OnClientConnectionChanged += Server_OnClientConnectionChanged;
             server.OnReceivedMessage += Server_OnReceivedMessage;

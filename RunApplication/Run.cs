@@ -7,7 +7,8 @@ namespace RunApplication
         static void Main(string[] args)
         {
             CobotApplicationProgram program = new CobotApplicationProgram();
-
+            program.RunProgram();
+            
             Console.ReadLine();
         }
     }

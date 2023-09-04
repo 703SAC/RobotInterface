@@ -15,8 +15,16 @@
         }
       },
       "CobotApplication/1.0.0": {
+        "dependencies": {
+          "RobotInterface.Driver": "1.0.0"
+        },
         "runtime": {
           "CobotApplication.dll": {}
+        }
+      },
+      "RobotInterface.Driver/1.0.0": {
+        "runtime": {
+          "RobotInterface.Driver.dll": {}
         }
       }
     }
@@ -28,6 +36,11 @@
       "sha512": ""
     },
     "CobotApplication/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "RobotInterface.Driver/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
