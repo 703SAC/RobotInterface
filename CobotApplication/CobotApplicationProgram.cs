@@ -1,4 +1,5 @@
 ﻿using RobotInterface.Driver;
+using System.Collections;
 using System.Data.SqlTypes;
 using System.Net;
 using System.Net.Sockets;
@@ -17,7 +18,7 @@ namespace CobotApplication
         }
         public CobotApplicationProgram(string robotIP = "192.168.0.4", int robotDashboardPort = 29999)
         {
-            ConnectToRobotDashboard(robotIP, robotDashboardPort);
+            //ConnectToRobotDashboard(robotIP, robotDashboardPort);
             autoresetEvent = new AutoResetEvent(false);
             //InitGetStatusTimer();
         }
@@ -33,8 +34,8 @@ namespace CobotApplication
         private Socket robotDashboardSocket;
         private SocketServerWithoutHeader robotSocketServer;
         private IPEndPoint robotSocketEndPoint;
-        private static string autostoreInterfaceUrl = "http://192.168.10.2/AsInterfaceHttp/AutoStoreHttpInterface.aspx";
         private AutoResetEvent autoresetEvent;
+        private AutostoreInterfaceDriver autostoreInterfaceDriver;
         #endregion
 
         #region [Public Methods]
@@ -44,10 +45,12 @@ namespace CobotApplication
             robotSocketServer.OnExceptionThrown += RobotSocketServer_OnExceptionThrown;
             robotSocketServer.OnClientConnectionChanged += RobotSocketServer_OnClientConnectionChanged;
             robotSocketServer.OnReceivedMessage += RobotSocketServer_OnReceivedMessage;
-            robotSocketServer.StartListening();
+            //robotSocketServer.StartListening();
+            autostoreInterfaceDriver = new AutostoreInterfaceDriver();
+
             while (true)
             {
-                Console.WriteLine("명령어 숫자 입력 1: Open Port 2: Open Bin 3: UR Robot Run 4: Close Bin 0: quit");
+                Console.WriteLine("명령어 숫자 입력 \n 1: Open Port \n 2: Open Bin \n 3: UR Robot Run \n 4: Close Bin \n 5: Get Bin Info \n 6: Close Port \n 7: Get Bin State \n 8: Get Port Status \n 0: quit");
                 int command = Convert.ToInt32(Console.ReadLine());
                 switch (command)
                 {
@@ -58,15 +61,19 @@ namespace CobotApplication
                         robotSocketServer.StopListening();
                         return;
                     case 1:
-                        string openPortXml = createXmlRequest("openport", "1");
-                        sendAndReceiveWithAutostore(openPortXml);
+                        string openPortXml = autostoreInterfaceDriver.createXmlOpenAndClosePort("openport", "1");
+                        autostoreInterfaceDriver.sendAndReceiveWithAutostore(openPortXml);
+                        CheckAutostoreStatus();
                         break;
                     case 2:
+                        Console.WriteLine("현재 포트 상태를 나타냅니다. ");
                         CheckAutostoreStatus();
-                        Console.WriteLine("Open할 Bin Number를 입력하세요.");
+                        Console.WriteLine("Open할 Bin Number를 입력하세요. 0을 입력하면 뒤로 돌아갑니다. ");
                         string openBinId = Console.ReadLine();
-                        string openBinXml = createXmlRequest("openbin", "1", openBinId);
-                        sendAndReceiveWithAutostore(openBinXml);
+                        if (openBinId.Equals("0"))
+                            break;
+                        string openBinXml = autostoreInterfaceDriver.createXmlOpenAndCloseBin("openbin", "1", openBinId);
+                        autostoreInterfaceDriver.sendAndReceiveWithAutostore(openBinXml);
                         break;
                     case 3:
                         sendAndReceiveWithRobotDashboard("stop");
@@ -78,13 +85,32 @@ namespace CobotApplication
                         //robotSocketServer.StopListening();
                         break;
                     case 4:
+                        Console.WriteLine("현재 포트 상태를 나타냅니다. ");
                         CheckAutostoreStatus();
-                        Console.WriteLine("Close할 Bin Number를 입력하세요.");
+                        Console.WriteLine("Close할 Bin Number를 입력하세요. 0을 입력하면 뒤로 돌아갑니다. ");
                         string closeBinId = Console.ReadLine();
-                        string closeBinXml = createXmlRequest("closebin", "1", closeBinId);
-                        sendAndReceiveWithAutostore(closeBinXml);
+                        if (closeBinId.Equals("0"))
+                            break;
+                        string closeBinXml = autostoreInterfaceDriver.createXmlOpenAndCloseBin("closebin", "1", closeBinId);
+                        autostoreInterfaceDriver.sendAndReceiveWithAutostore(closeBinXml);
                         break;
-
+                    case 5:
+                        Console.WriteLine("현재 모든 bin 정보를 나타냅니다. ");
+                        string getBinInfo = autostoreInterfaceDriver.createXmlGetBinInfo("getbininfo");
+                        autostoreInterfaceDriver.sendAndReceiveWithAutostore(getBinInfo);
+                        break;
+                    case 6:
+                        string closePortXml = autostoreInterfaceDriver.createXmlOpenAndClosePort("closeport", "1");
+                        autostoreInterfaceDriver.sendAndReceiveWithAutostore(closePortXml);
+                        CheckAutostoreStatus();
+                        break;
+                    case 7:
+                        string getBinStateXml = autostoreInterfaceDriver.createXmlGetBinInfo("getbinstate");
+                        autostoreInterfaceDriver.sendAndReceiveWithAutostore(getBinStateXml);
+                        break;
+                    case 8:
+                        CheckAutostoreStatus();
+                        break;
                 }
 
             }
@@ -95,21 +121,50 @@ namespace CobotApplication
             
             if (e.Message.Contains("shape"))
             {
-                Console.WriteLine("물건의 유형을 입력해 주세요. 1: 원통 2: 직육면체 ");
-                int shape = Convert.ToInt32(Console.ReadLine());
-                //string shape = Console.ReadLine();
-                //string message = "(1, " + shape  +")";
+                int shape = 0;
+                
+                while (true)
+                {
+                    Console.WriteLine("물건의 유형을 입력해 주세요. 1: 원통 2: 직사각형 3: 군집 ");
+                    ArrayList arrayList = new ArrayList();
+                    arrayList.Add(1);
+                    arrayList.Add(2);
+                    arrayList.Add(3);
+                    shape = Convert.ToInt32(Console.ReadLine());
+
+                    if (arrayList.Contains(shape) == true)
+                        break;
+                    else
+                        Console.WriteLine("입력이 잘못되었습니다 : " + shape);
+                }
                 
                 robotSocketServer.SendMessage(e.ClientID, shape);
 
+            }
+            else if (e.Message.Contains("target"))
+            {
+                int target = 0;
+
+                while (true)
+                {
+                    Console.WriteLine("target을 입력해 주세요. 1 or 2");
+                    ArrayList arrayList = new ArrayList();
+                    arrayList.Add(1);
+                    arrayList.Add(2);
+                    target = Convert.ToInt32(Console.ReadLine());
+
+                    if (arrayList.Contains(target) == true)
+                        break;
+                    else
+                        Console.WriteLine("입력이 잘못되었습니다 : " + target);
+                }
+
+                robotSocketServer.SendMessage(e.ClientID, target);
             }
             else if (e.Message.Contains("number"))
             {
                 Console.WriteLine("꺼낼 물건 개수를 입력해 주세요.");
                 int numberOfItem = Convert.ToInt32(Console.ReadLine());
-                //string numberOfItem = Console.ReadLine();
-
-                //string message = "(1, "+ numberOfItem + ")";
 
                 robotSocketServer.SendMessage(e.ClientID, numberOfItem);
             }
@@ -157,15 +212,15 @@ namespace CobotApplication
             #endregion
 
             #region [Autostore Status Check]
-            string xmlGetPostStatus = createXmlGetPortStatus();
-            sendAndReceiveWithAutostore(xmlGetPostStatus);
+            string xmlGetPostStatus = autostoreInterfaceDriver.createXmlGetPortStatus();
+            autostoreInterfaceDriver.sendAndReceiveWithAutostore(xmlGetPostStatus);
             #endregion
         }
 
         private void CheckAutostoreStatus()
         {
-            string xmlGetPostStatus = createXmlGetPortStatus();
-            sendAndReceiveWithAutostore(xmlGetPostStatus);
+            string xmlGetPostStatus = autostoreInterfaceDriver.createXmlGetPortStatus();
+            autostoreInterfaceDriver.sendAndReceiveWithAutostore(xmlGetPostStatus);
         }
 
         private void ConnectToRobotDashboard(string robotIP, int robotDashboardPort)
@@ -185,7 +240,6 @@ namespace CobotApplication
             }
             
         }
-
         private string sendAndReceiveWithRobotDashboard(string message)
         {
             string returnMessage = "";
@@ -198,40 +252,17 @@ namespace CobotApplication
                 }
 
                 byte[] sendBuffer = Encoding.ASCII.GetBytes(message + "\n");
-                    robotDashboardSocket.Send(sendBuffer);
-                    byte[] receiveBuffer = new byte[1024];
-                    int byteCountReceive = robotDashboardSocket.Receive(receiveBuffer);
-                    if (byteCountReceive > 0)
-                    {
-                        returnMessage = Encoding.ASCII.GetString(receiveBuffer);
-                        Console.WriteLine(returnMessage);
-                    }
-                    else
-                    {
-                        Console.WriteLine("robot 통신 연결을 확인해주세요.");
-                    }
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-
-            return returnMessage;
-        }
-        private string sendAndReceiveWithAutostore(string xmlString)
-        {
-            string returnMessage = string.Empty;
-            try
-            {
-                using (HttpClient client = new HttpClient())
+                robotDashboardSocket.Send(sendBuffer);
+                byte[] receiveBuffer = new byte[1024];
+                int byteCountReceive = robotDashboardSocket.Receive(receiveBuffer);
+                if (byteCountReceive > 0)
                 {
-                    StringContent stringContent = new StringContent(xmlString, Encoding.UTF8);
-                    var response = client.PostAsync(autostoreInterfaceUrl, stringContent).Result;
-                    Console.WriteLine("http client post statusCode: " + response.StatusCode + " Content: " + response.Content);
-                    StreamReader returnStream = new StreamReader(response.Content.ReadAsStream());
-                    returnMessage = returnStream.ReadToEnd();
-
+                    returnMessage = Encoding.ASCII.GetString(receiveBuffer);
                     Console.WriteLine(returnMessage);
+                }
+                else
+                {
+                    Console.WriteLine("robot 통신 연결을 확인해주세요.");
                 }
             }
             catch (Exception ex)
@@ -241,160 +272,7 @@ namespace CobotApplication
 
             return returnMessage;
         }
-        
 
-        private string createXmlGetPortStatus()
-        {
-            string xmlString = "";
-            XmlDocument xdoc = new XmlDocument();
-            XmlDeclaration xmlDeclaration = xdoc.CreateXmlDeclaration("1.0", "UTF-8", "yes");
-            xdoc.AppendChild(xmlDeclaration);
-
-            XmlNode root = xdoc.CreateElement("methodcall");
-            xdoc.AppendChild(root);
-
-            XmlNode methodName = xdoc.CreateElement("name");
-            methodName.InnerText = "getportstatus";
-            root.AppendChild(methodName);
-
-            XmlNode parameters = xdoc.CreateElement("params");
-            root.AppendChild(parameters);
-
-            XmlNode port_id = xdoc.CreateElement("port_id");
-            port_id.InnerText = "1";
-            parameters.AppendChild(port_id);
-
-            xmlString = xdoc.OuterXml;
-
-            Console.WriteLine(xmlString);
-
-            return xmlString;
-        }
-
-        private string createXmlRequest(string method)
-        {
-            string xmlString = "";
-
-
-            XmlDocument xdoc = new XmlDocument();
-            XmlDeclaration xmlDeclaration = xdoc.CreateXmlDeclaration("1.0", "UTF-8", "yes");
-            xdoc.AppendChild(xmlDeclaration);
-            //xdoc.CreateXmlDeclaration("1.0", "UTF-8", "no");
-
-            XmlNode root = xdoc.CreateElement("methodcall");
-            xdoc.AppendChild(root);
-
-            XmlNode methodName = xdoc.CreateElement("name");
-            methodName.InnerText = method;
-            root.AppendChild(methodName);
-
-            XmlNode parameters = xdoc.CreateElement("params");
-            XmlNode minBinId = xdoc.CreateElement("min_bin_id");
-            minBinId.InnerText = "100002";
-            XmlNode maxBinId = xdoc.CreateElement("max_bin_id");
-            maxBinId.InnerText = "100032";
-
-            parameters.AppendChild(minBinId);
-            parameters.AppendChild(maxBinId);
-
-            root.AppendChild(parameters);
-
-            xdoc.Save(@"C:\xmlTest.xml");
-
-            xmlString = xdoc.OuterXml;
-
-
-
-            Console.WriteLine($"xmlString : {xmlString}");
-
-            return xmlString;
-        }
-
-        private string createXmlRequest(string method, string port, string bin)
-        {
-            string xmlString = "";
-
-
-            XmlDocument xdoc = new XmlDocument();
-            XmlDeclaration xmlDeclaration = xdoc.CreateXmlDeclaration("1.0", "UTF-8", "yes");
-            xdoc.AppendChild(xmlDeclaration);
-            //xdoc.CreateXmlDeclaration("1.0", "UTF-8", "no");
-
-            XmlNode root = xdoc.CreateElement("methodcall");
-            xdoc.AppendChild(root);
-
-            XmlNode methodName = xdoc.CreateElement("name");
-            methodName.InnerText = method;
-            root.AppendChild(methodName);
-
-            XmlNode parameters = xdoc.CreateElement("params");
-            XmlNode portId = xdoc.CreateElement("port_id");
-
-
-            portId.InnerText = port;
-
-            XmlNode binId = xdoc.CreateElement("bin_id");
-            binId.InnerText = bin;
-
-            parameters.AppendChild(portId);
-            parameters.AppendChild(binId);
-
-            root.AppendChild(parameters);
-
-            xdoc.Save(@"C:\xmlTest.xml");
-
-            xmlString = xdoc.OuterXml;
-
-
-
-            Console.WriteLine($"xmlString : {xmlString}");
-
-            return xmlString;
-        }
-
-        private string createXmlRequest(string method, string port)
-        {
-            string xmlString = "";
-
-
-            XmlDocument xdoc = new XmlDocument();
-            XmlDeclaration xmlDeclaration = xdoc.CreateXmlDeclaration("1.0", "UTF-8", "yes");
-            xdoc.AppendChild(xmlDeclaration);
-            //xdoc.CreateXmlDeclaration("1.0", "UTF-8", "no");
-
-            XmlNode root = xdoc.CreateElement("methodcall");
-            xdoc.AppendChild(root);
-
-            XmlNode methodName = xdoc.CreateElement("name");
-            methodName.InnerText = method;
-            root.AppendChild(methodName);
-
-            XmlNode parameters = xdoc.CreateElement("params");
-            if (method.Equals("openport"))
-            {
-                XmlNode select = xdoc.CreateElement("select");
-                XmlNode category = xdoc.CreateElement("category");
-                category.InnerText = "1";
-                select.AppendChild(category);
-                parameters.AppendChild(select);
-            }
-            XmlNode portId = xdoc.CreateElement("port_id");
-            portId.InnerText = port;
-
-            parameters.AppendChild(portId);
-
-            root.AppendChild(parameters);
-
-            xdoc.Save(@"C:\xmlTest.xml");
-
-            xmlString = xdoc.OuterXml;
-
-
-
-            Console.WriteLine($"xmlString : {xmlString}");
-
-            return xmlString;
-        }
         #endregion
     }
 }
