@@ -1,0 +1,9 @@
+C:\Users\LGCNS\Desktop\RobotInterface\RunApplication.exe
+C:\Users\LGCNS\Desktop\RobotInterface\RunApplication.dll
+C:\Users\LGCNS\Desktop\RobotInterface\RunApplication.deps.json
+C:\Users\LGCNS\Desktop\RobotInterface\RunApplication.runtimeconfig.json
+C:\Users\LGCNS\Desktop\RobotInterface\RunApplication.pdb
+C:\Users\LGCNS\Desktop\RobotInterface\CobotApplication.dll
+C:\Users\LGCNS\Desktop\RobotInterface\RobotInterface.Driver.dll
+C:\Users\LGCNS\Desktop\RobotInterface\CobotApplication.pdb
+C:\Users\LGCNS\Desktop\RobotInterface\RobotInterface.Driver.pdb
