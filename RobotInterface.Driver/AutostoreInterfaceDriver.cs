@@ -9,7 +9,20 @@ namespace RobotInterface.Driver
 {
     public class AutostoreInterfaceDriver
     {
-        private static string autostoreInterfaceUrl = "http://192.168.0.233/AsInterfaceHttp/AutoStoreHttpInterface.aspx";
+        private string autostoreInterfaceUrl = "http://192.168.0.233/AsInterfaceHttp/AutoStoreHttpInterface.aspx";
+        
+        public AutostoreInterfaceDriver(string interfaceType, string serverIP = "192.168.0.233")
+        {
+            if (interfaceType.Contains("bin"))
+            {
+                autostoreInterfaceUrl = "http://" + serverIP + "/AsInterfaceHttp/BinInterface.aspx";
+
+            }
+            else if (interfaceType.Contains("task"))
+            {
+                autostoreInterfaceUrl = "http://" + serverIP + "/AsInterfaceHttp/AutoStoreHttpInterface.aspx";
+            }
+        }
 
         public string sendAndReceiveWithAutostore(string xmlString)
         {
@@ -144,8 +157,7 @@ namespace RobotInterface.Driver
 
             return xmlString;
         }
-
-        public string createXmlOpenAndClosePort(string method, string port)
+        public string createXmlPrepareBin(string method, string port, string bin)
         {
             string xmlString = "";
 
@@ -163,11 +175,92 @@ namespace RobotInterface.Driver
             root.AppendChild(methodName);
 
             XmlNode parameters = xdoc.CreateElement("params");
-            if (method.Equals("openport"))
+            XmlNode bins = xdoc.CreateElement("bins");
+
+
+
+            XmlNode binId = xdoc.CreateElement("bin_id");
+            binId.InnerText = bin;
+
+            parameters.AppendChild(bins);
+            bins.AppendChild(binId);
+
+            root.AppendChild(parameters);
+
+            xdoc.Save(@"C:\xmlTest.xml");
+
+            xmlString = xdoc.OuterXml;
+
+
+
+            Console.WriteLine($"xmlString : {xmlString}");
+
+            return xmlString;
+        }
+        public string createXmlAppendPortQueue(string method, string port, string bin)
+        {
+            string xmlString = "";
+
+
+            XmlDocument xdoc = new XmlDocument();
+            XmlDeclaration xmlDeclaration = xdoc.CreateXmlDeclaration("1.0", "UTF-8", "yes");
+            xdoc.AppendChild(xmlDeclaration);
+            //xdoc.CreateXmlDeclaration("1.0", "UTF-8", "no");
+
+            XmlNode root = xdoc.CreateElement("methodcall");
+            xdoc.AppendChild(root);
+
+            XmlNode methodName = xdoc.CreateElement("name");
+            methodName.InnerText = method;
+            root.AppendChild(methodName);
+
+            XmlNode parameters = xdoc.CreateElement("params");
+            XmlNode portId = xdoc.CreateElement("port_id");
+            portId.InnerText = port;
+            parameters.AppendChild(portId);
+            XmlNode bins = xdoc.CreateElement("bins");
+            XmlNode binId = xdoc.CreateElement("bin_id");
+            binId.InnerText = bin;
+
+            parameters.AppendChild(bins);
+            bins.AppendChild(binId);
+
+            root.AppendChild(parameters);
+
+            xdoc.Save(@"C:\xmlTest.xml");
+
+            xmlString = xdoc.OuterXml;
+
+
+
+            Console.WriteLine($"xmlString : {xmlString}");
+
+            return xmlString;
+        }
+
+        public string createXmlOpenAndClosePort(string method, string port, bool isInsert = false)
+        {
+            string xmlString = "";
+
+
+            XmlDocument xdoc = new XmlDocument();
+            XmlDeclaration xmlDeclaration = xdoc.CreateXmlDeclaration("1.0", "UTF-8", "yes");
+            xdoc.AppendChild(xmlDeclaration);
+            //xdoc.CreateXmlDeclaration("1.0", "UTF-8", "no");
+
+            XmlNode root = xdoc.CreateElement("methodcall");
+            xdoc.AppendChild(root);
+
+            XmlNode methodName = xdoc.CreateElement("name");
+            methodName.InnerText = method;
+            root.AppendChild(methodName);
+
+            XmlNode parameters = xdoc.CreateElement("params");
+            if (method.Equals("openport") && isInsert == false)
             {
                 XmlNode select = xdoc.CreateElement("select");
                 XmlNode category = xdoc.CreateElement("category");
-                select.InnerText = "100015";
+                //select.InnerText = "100015";
                 category.InnerText = "1";
                 select.AppendChild(category);
                 parameters.AppendChild(select);

@@ -1,0 +1,10 @@
+C:\Users\LGCNS\Documents\Repository\RobotInterface\GUIWinforms\bin\Debug\GUIWinforms.exe.config
+C:\Users\LGCNS\Documents\Repository\RobotInterface\GUIWinforms\bin\Debug\GUIWinforms.exe
+C:\Users\LGCNS\Documents\Repository\RobotInterface\GUIWinforms\bin\Debug\GUIWinforms.pdb
+C:\Users\LGCNS\Documents\Repository\RobotInterface\GUIWinforms\obj\Debug\GUIWinforms.csproj.AssemblyReference.cache
+C:\Users\LGCNS\Documents\Repository\RobotInterface\GUIWinforms\obj\Debug\GUIWinforms.Form1.resources
+C:\Users\LGCNS\Documents\Repository\RobotInterface\GUIWinforms\obj\Debug\GUIWinforms.Properties.Resources.resources
+C:\Users\LGCNS\Documents\Repository\RobotInterface\GUIWinforms\obj\Debug\GUIWinforms.csproj.GenerateResource.cache
+C:\Users\LGCNS\Documents\Repository\RobotInterface\GUIWinforms\obj\Debug\GUIWinforms.csproj.CoreCompileInputs.cache
+C:\Users\LGCNS\Documents\Repository\RobotInterface\GUIWinforms\obj\Debug\GUIWinforms.exe
+C:\Users\LGCNS\Documents\Repository\RobotInterface\GUIWinforms\obj\Debug\GUIWinforms.pdb

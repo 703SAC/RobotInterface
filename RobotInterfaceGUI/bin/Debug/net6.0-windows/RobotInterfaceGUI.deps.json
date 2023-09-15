@@ -1,0 +1,49 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "RobotInterfaceGUI/1.0.0": {
+        "dependencies": {
+          "CobotApplication": "1.0.0"
+        },
+        "runtime": {
+          "RobotInterfaceGUI.dll": {}
+        }
+      },
+      "CobotApplication/1.0.0": {
+        "dependencies": {
+          "RobotInterface.Driver": "1.0.0"
+        },
+        "runtime": {
+          "CobotApplication.dll": {}
+        }
+      },
+      "RobotInterface.Driver/1.0.0": {
+        "runtime": {
+          "RobotInterface.Driver.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "RobotInterfaceGUI/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CobotApplication/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "RobotInterface.Driver/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

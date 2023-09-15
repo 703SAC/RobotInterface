@@ -7,9 +7,17 @@ namespace RunApplication
         static void Main(string[] args)
         {
             CobotApplicationProgram program = new CobotApplicationProgram();
-            program.RunProgram();
+            program.RunConsoleProgram();
+
+            Console.WriteLine("Enter를 누르면 종료 \n run을 입력하면 재실행");
+            string command = Console.ReadLine();
+            switch(command)
+            {
+                case "run":
+                    program.RunConsoleProgram();
+                    break;
+            }
             
-            Console.ReadLine();
         }
     }
 }
