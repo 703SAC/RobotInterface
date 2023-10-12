@@ -57,7 +57,9 @@ namespace CobotApplication
             //autostoreBinInterfaceDriver = new AutostoreInterfaceDriver("bin");
             while (true)
             {
-                Console.WriteLine("명령어 숫자 입력 \n 1: Open Port \n 2: Open Bin \n 3: UR Robot Run \n 4: Close Bin \n 5: Get Bin Info \n 6: Close Port \n 7: Get Bin State \n 8: Get Port Status \n 9: Open Port For Insertion \n 10: Insert Bin \n 0: Quit");
+                //Console.WriteLine("명령어 숫자 입력 \n 1: Open Port \n 2: Open Bin \n 3: UR Robot Run \n 4: Close Bin \n 5: Get Bin Info \n 6: Close Port \n 7: Get Bin State \n 8: Get Port Status \n 9: Open Port For Insertion \n 10: Insert Bin \n 0: Quit");
+                Console.WriteLine("명령어 숫자 입력 \n 1: Open Port \n 2: Open Bin \n 3: UR Robot Run \n 4: Close Bin \n 5: Close Port \n 6: Get Port Status \n 0: Quit");
+
                 int command = Convert.ToInt32(Console.ReadLine());
                 switch (command)
                 {
@@ -95,21 +97,21 @@ namespace CobotApplication
                         string closeBinXml = autostoreTaskInterfaceDriver.createXmlOpenAndCloseBin("closebin", "1", closeBinId);
                         autostoreTaskInterfaceDriver.sendAndReceiveWithAutostore(closeBinXml);
                         break;
+                    //case 5:
+                    //    Console.WriteLine("현재 모든 bin 정보를 나타냅니다. ");
+                    //    string getBinInfo = autostoreTaskInterfaceDriver.createXmlGetBinInfo("getbininfo");
+                    //    autostoreTaskInterfaceDriver.sendAndReceiveWithAutostore(getBinInfo);
+                    //    break;
                     case 5:
-                        Console.WriteLine("현재 모든 bin 정보를 나타냅니다. ");
-                        string getBinInfo = autostoreTaskInterfaceDriver.createXmlGetBinInfo("getbininfo");
-                        autostoreTaskInterfaceDriver.sendAndReceiveWithAutostore(getBinInfo);
-                        break;
-                    case 6:
                         string closePortXml = autostoreTaskInterfaceDriver.createXmlOpenAndClosePort("closeport", "1");
                         autostoreTaskInterfaceDriver.sendAndReceiveWithAutostore(closePortXml);
                         CheckAutostoreStatus();
                         break;
-                    case 7:
-                        string getBinStateXml = autostoreTaskInterfaceDriver.createXmlGetBinInfo("getbinstate");
-                        autostoreTaskInterfaceDriver.sendAndReceiveWithAutostore(getBinStateXml);
-                        break;
-                    case 8:
+                    //case 7:
+                    //    string getBinStateXml = autostoreTaskInterfaceDriver.createXmlGetBinInfo("getbinstate");
+                    //    autostoreTaskInterfaceDriver.sendAndReceiveWithAutostore(getBinStateXml);
+                    //    break;
+                    case 6:
                         CheckAutostoreStatus();
                         break;
                     //case 9:
@@ -124,17 +126,17 @@ namespace CobotApplication
                     //    string appendPortQueue = autostoreBinInterfaceDriver.createXmlAppendPortQueue("appendportqueue", "1", appendBinId);
                     //    autostoreBinInterfaceDriver.sendAndReceiveWithAutostore(appendPortQueue);
                     //    break;
-                    case 9:
-                        Console.WriteLine("Open Port For Insertion");
-                        string OpenPortForInsertXml = autostoreTaskInterfaceDriver.createXmlOpenAndClosePort("openport", "1", true);
-                        autostoreTaskInterfaceDriver.sendAndReceiveWithAutostore(OpenPortForInsertXml);
-                        break;
-                    case 10:
-                        Console.WriteLine("Insert Bin Number를 입력하세요");
-                        string insertBinId = Console.ReadLine();
-                        string InsertBinXml = autostoreTaskInterfaceDriver.createXmlOpenAndCloseBin("insertbin", "1", insertBinId);
-                        autostoreTaskInterfaceDriver.sendAndReceiveWithAutostore(InsertBinXml);
-                        break;
+                    //case 9:
+                    //    Console.WriteLine("Open Port For Insertion");
+                    //    string OpenPortForInsertXml = autostoreTaskInterfaceDriver.createXmlOpenAndClosePort("openport", "1", true);
+                    //    autostoreTaskInterfaceDriver.sendAndReceiveWithAutostore(OpenPortForInsertXml);
+                    //    break;
+                    //case 10:
+                    //    Console.WriteLine("Insert Bin Number를 입력하세요");
+                    //    string insertBinId = Console.ReadLine();
+                    //    string InsertBinXml = autostoreTaskInterfaceDriver.createXmlOpenAndCloseBin("insertbin", "1", insertBinId);
+                    //    autostoreTaskInterfaceDriver.sendAndReceiveWithAutostore(InsertBinXml);
+                    //    break;
                 }
 
             }
